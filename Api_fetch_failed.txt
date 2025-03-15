@@ -1,0 +1,132 @@
+// const BACKEND_URL = "http://localhost:8000"; // Your backend server
+
+// export async function fetchContests(): Promise<Contest[]> {
+//   try {
+//     const [leetcodeData, codechefData, codeforcesData] = await Promise.all([
+//       fetchLeetCodeContests(),
+//       fetchCodeChefContests(),
+//       fetchCodeforcesContests(),
+//     ]);
+
+//     return [...leetcodeData, ...codechefData, ...codeforcesData].sort(
+//       (a, b) =>
+//         new Date(a.startTime).getTime() - new Date(b.startTime).getTime()
+//     );
+//   } catch (error) {
+//     console.error("Error fetching contests:", error);
+//     return [];
+//   }
+// }
+
+// // Fetch LeetCode contests via your backend
+// async function fetchLeetCodeContests(): Promise<Contest[]> {
+//   try {
+//     const response = await fetch(`${BACKEND_URL}/api/leetcode`, {
+//       method: "POST",
+//       headers: { "Content-Type": "application/json" },
+//       body: JSON.stringify({
+//         query: `query {
+//           contestUpcomingContests {
+//             title
+//             titleSlug
+//             startTime
+//             duration
+//           }
+//         }`,
+//       }),
+//     });
+
+//     if (!response.ok) {
+//       const errorText = await response.text();
+//       throw new Error(`LeetCode API Error: ${errorText}`);
+//     }
+
+//     const data = await response.json();
+//     if (!data.data || !Array.isArray(data.data.contestUpcomingContests)) {
+//       console.error("Unexpected LeetCode response:", data);
+//       return [];
+//     }
+
+//     return data.data.contestUpcomingContests.map((contest: any) => ({
+//       id: `lc-${contest.titleSlug}`,
+//       name: contest.title,
+//       platform: "leetcode",
+//       url: `https://leetcode.com/contest/${contest.titleSlug}`,
+//       startTime: new Date(contest.startTime * 1000).toISOString(),
+//       durationMinutes: contest.duration / 60,
+//     }));
+//   } catch (error) {
+//     console.error("Error fetching LeetCode contests:", error);
+//     return [];
+//   }
+// }
+
+// // Fetch CodeChef contests directly
+// async function fetchCodeChefContests(): Promise<Contest[]> {
+//   try {
+//     const response = await fetch(`${BACKEND_URL}/codechef-contests`);
+
+//     if (!response.ok) {
+//       const errorText = await response.text();
+//       throw new Error(`CodeChef API Error: ${errorText}`);
+//     }
+
+//     const data = await response.json();
+//     console.log("CodeChef data received:", data);
+
+//     // Check for the expected structure and provide fallbacks
+//     const contests =
+//       data?.future_contests || data?.contests?.future_contests || [];
+
+//     if (!Array.isArray(contests)) {
+//       console.error("Unexpected CodeChef response format:", data);
+//       return [];
+//     }
+
+//     return contests.map((contest: any) => ({
+//       id: `cc-${contest.contest_code}`,
+//       name: contest.contest_name,
+//       platform: "codechef",
+//       url: `https://www.codechef.com/${contest.contest_code}`,
+//       startTime: new Date(
+//         contest.start_date_iso || contest.start_date
+//       ).toISOString(),
+//       durationMinutes: (contest.duration || 0) / 60,
+//     }));
+//   } catch (error) {
+//     console.error("Error fetching CodeChef contests:", error);
+//     return [];
+//   }
+// }
+
+// // Fetch Codeforces contests directly
+// async function fetchCodeforcesContests(): Promise<Contest[]> {
+//   try {
+//     const response = await fetch("https://codeforces.com/api/contest.list");
+
+//     if (!response.ok) {
+//       const errorText = await response.text();
+//       throw new Error(`Codeforces API Error: ${errorText}`);
+//     }
+
+//     const data = await response.json();
+//     if (!data.result || !Array.isArray(data.result)) {
+//       console.error("Unexpected Codeforces response:", data);
+//       return [];
+//     }
+
+//     return data.result
+//       .filter((contest: any) => contest.phase === "BEFORE")
+//       .map((contest: any) => ({
+//         id: `cf-${contest.id}`,
+//         name: contest.name,
+//         platform: "codeforces",
+//         url: `https://codeforces.com/contest/${contest.id}`,
+//         startTime: new Date(contest.startTimeSeconds * 1000).toISOString(),
+//         durationMinutes: contest.durationSeconds / 60,
+//       }));
+//   } catch (error) {
+//     console.error("Error fetching Codeforces contests:", error);
+//     return [];
+//   }
+// }
