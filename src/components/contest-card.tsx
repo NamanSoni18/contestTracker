@@ -13,7 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import type { Contest } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
-const API_KEY = "AIzaSyCKqrCmCVyCoKkd8E1BuouiyVB83UzNdi8";
+const API_KEY = import.meta.env.VITE_YOUTUBE_API_KEY;
 // const API_KEY = "";
 
 interface ContestCardProps {
